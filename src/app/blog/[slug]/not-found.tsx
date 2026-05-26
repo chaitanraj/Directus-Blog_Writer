@@ -9,7 +9,7 @@ export default function BlogPostNotFound() {
       <Container className="max-w-3xl">
         <EmptyState
           title="Post not found"
-          description="The requested slug does not exist in the Directus `posts` collection, or it is not available to this public client."
+          description="The requested post ID does not exist in the Directus `posts` collection, or it is not available to this public client."
         />
         <div className="mt-6 text-center">
           <Link
