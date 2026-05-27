@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/Container";
-import { getPostById, getPostTitle } from "@/lib/directus";
+import { getDirectusAssetUrl, getPostById, getPostImage, getPostTitle } from "@/lib/directus";
 
 type BlogPostPageProps = {
   params: Promise<{
@@ -10,7 +10,7 @@ type BlogPostPageProps = {
   }>;
 };
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
@@ -21,17 +21,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const title = getPostTitle(post);
+  const imageUrl = getDirectusAssetUrl(getPostImage(post));
 
   return (
     <main className="py-10">
       <Container className="max-w-3xl">
         <Link href="/" className="text-sm text-gray-600 hover:underline">
-          ← Back to posts
+          &larr; Back to posts
         </Link>
 
         <div className="mt-6 flex items-center gap-3 text-xs text-gray-500">
           <span>{post.status ?? "unknown"}</span>
-          <span>·</span>
+          <span>&middot;</span>
           <span>
             {post.date_created
               ? new Date(post.date_created).toLocaleDateString("en-US", {
@@ -44,6 +45,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <h1 className="mt-2 text-2xl font-semibold text-black">{title}</h1>
+
+        {imageUrl ? (
+          <div className="mt-6 aspect-[16/9] w-full overflow-hidden border border-gray-200 bg-gray-100 sm:w-1/2 lg:w-1/4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt={title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        ) : null}
 
         <div className="mt-4 text-xs text-gray-500">
           <div>Post ID: {post.id}</div>

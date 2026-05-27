@@ -17,7 +17,7 @@ export async function GET() {
     return NextResponse.json(
       {
         error: message,
-        hint: "Check Directus public role permissions for `posts`, or provide DIRECTUS_TOKEN in .env.local.",
+        hint: "Check Directus public role permissions for `posts`, or provide DIRECTUS_SERVER_TOKEN in .env.local.",
       },
       { status: 500 },
     );

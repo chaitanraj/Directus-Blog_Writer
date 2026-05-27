@@ -4,14 +4,15 @@ import { EmptyState } from "@/components/EmptyState";
 import { getPosts } from "@/lib/directus";
 import type { BlogPost } from "@/types/blog";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function HomePage() {
   let posts: BlogPost[] = [];
   let errorMessage: string | null = null;
 
   try {
-    posts = (await getPosts()) as BlogPost[];
+    const all = (await getPosts()) as BlogPost[];
+    posts = all;
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : "Failed to fetch posts from Directus.";
   }

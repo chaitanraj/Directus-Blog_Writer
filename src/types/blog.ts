@@ -4,6 +4,13 @@ export type BlogPost = {
   sort?: number | null;
   user_created?: string | null;
   post_data?: string | null;
+  featured_image?:
+    | string
+    | number
+    | { id?: string | number | null; directus_files_id?: string | { id?: string | null } | null }
+    | Array<string | number | { id?: string | number | null; directus_files_id?: string | { id?: string | null } | null }>
+    | null;
+  image?: string | number | { id?: string | number | null } | null;
   date_created?: string | null;
 };
 
