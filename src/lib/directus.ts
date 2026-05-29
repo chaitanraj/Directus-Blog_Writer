@@ -16,13 +16,17 @@ const directusUrls = Array.from(
   ]),
 );
 
-export async function fetchDirectus<T>(path: string) {
+export async function fetchDirectus<T>(path: string, init?: RequestInit) {
   let lastError: unknown;
 
   for (const url of directusUrls) {
     try {
       const response = await fetch(`${url}${path}`, {
-        headers: directusToken ? { Authorization: `Bearer ${directusToken}` } : undefined,
+        ...init,
+        headers: {
+          ...(directusToken ? { Authorization: `Bearer ${directusToken}` } : {}),
+          ...init?.headers,
+        },
         cache: "no-store",
       });
 

@@ -1,12 +1,7 @@
 import type { Comment } from "@/types/blog";
 
-const directusUrl = (process.env.NEXT_PUBLIC_DIRECTUS_URL ?? "http://localhost:8056").replace(
-  /\/$/,
-  "",
-);
-
-async function directusFetch<T>(path: string, init?: RequestInit) {
-  const response = await fetch(`${directusUrl}${path}`, {
+async function commentsFetch<T>(path = "", init?: RequestInit) {
+  const response = await fetch(`/api/comments${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -15,26 +10,22 @@ async function directusFetch<T>(path: string, init?: RequestInit) {
   });
 
   if (!response.ok) {
-    throw new Error("Directus request failed.");
+    const body = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(body?.error ?? "Directus request failed.");
   }
 
   return (await response.json()) as T;
 }
 
 export async function getComments(postId: number | string) {
-  const params = new URLSearchParams({
-    fields: "id,content,post,date_created",
-    "filter[post][_eq]": String(postId),
-    sort: "date_created",
-  });
-
-  const response = await directusFetch<{ data: Comment[] }>(`/items/comments?${params}`);
+  const params = new URLSearchParams({ post: String(postId) });
+  const response = await commentsFetch<{ data: Comment[] }>(`?${params}`);
 
   return response.data;
 }
 
 export async function createComment(postId: number | string, content: string) {
-  const response = await directusFetch<{ data: Comment }>("/items/comments", {
+  const response = await commentsFetch<{ data: Comment }>("", {
     method: "POST",
     body: JSON.stringify({
       content,
