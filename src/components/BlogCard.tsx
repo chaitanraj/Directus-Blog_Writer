@@ -17,7 +17,7 @@ export function BlogCard({ post }: BlogCardProps) {
       className="block overflow-hidden border border-gray-300 hover:bg-gray-50"
     >
       {imageUrl ? (
-        <div className="aspect-[16/9] w-full bg-gray-100 sm:w-1/2 lg:w-1/4">
+        <div className="aspect-[16/9] w-full max-w-80 overflow-hidden bg-gray-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}

@@ -14,6 +14,14 @@ export type BlogPost = {
   date_created?: string | null;
 };
 
+export type Comment = {
+  id: number | string;
+  content?: string | null;
+  post?: number | string | BlogPost | null;
+  date_created?: string | null;
+};
+
 export type DirectusSchema = {
   posts: BlogPost[];
+  comments: Comment[];
 };

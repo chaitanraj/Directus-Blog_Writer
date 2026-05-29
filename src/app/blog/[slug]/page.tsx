@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Container } from "@/components/Container";
+import { Comments } from "@/components/Comments";
 import { getDirectusAssetUrl, getPostById, getPostImage, getPostTitle } from "@/lib/directus";
 
 type BlogPostPageProps = {
@@ -24,53 +24,45 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const imageUrl = getDirectusAssetUrl(getPostImage(post));
 
   return (
-    <main className="py-10">
-      <Container className="max-w-3xl">
-        <Link href="/" className="text-sm text-gray-600 hover:underline">
-          &larr; Back to posts
-        </Link>
+    <main
+      style={{
+        maxWidth: "720px",
+        margin: "0 auto",
+        padding: "40px 16px",
+        background: "#fff",
+        color: "#000",
+      }}
+    >
+      <Link href="/">Back to posts</Link>
 
-        <div className="mt-6 flex items-center gap-3 text-xs text-gray-500">
-          <span>{post.status ?? "unknown"}</span>
-          <span>&middot;</span>
-          <span>
-            {post.date_created
-              ? new Date(post.date_created).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })
-              : "No date"}
-          </span>
-        </div>
+      <h1 style={{ fontSize: "24px", marginTop: "24px" }}>{title}</h1>
 
-        <h1 className="mt-2 text-2xl font-semibold text-black">{title}</h1>
+      {imageUrl ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={title}
+            style={{
+              display: "block",
+              width: "100%",
+              maxWidth: "320px",
+              height: "auto",
+              marginTop: "24px",
+            }}
+          />
+        </>
+      ) : null}
 
-        {imageUrl ? (
-          <div className="mt-6 aspect-[16/9] w-full overflow-hidden border border-gray-200 bg-gray-100 sm:w-1/2 lg:w-1/4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={title}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        ) : null}
+      <article style={{ marginTop: "24px" }}>
+        {post.post_data ? (
+          <div dangerouslySetInnerHTML={{ __html: post.post_data }} />
+        ) : (
+          <p>No content yet.</p>
+        )}
+      </article>
 
-        <div className="mt-4 text-xs text-gray-500">
-          <div>Post ID: {post.id}</div>
-          {post.sort !== null && post.sort !== undefined ? <div>Sort: {post.sort}</div> : null}
-          {post.user_created ? <div>Author ID: {post.user_created}</div> : null}
-        </div>
-
-        <article className="mt-6 text-sm leading-7 text-black">
-          {post.post_data ? (
-            <div dangerouslySetInnerHTML={{ __html: post.post_data }} />
-          ) : (
-            <p className="text-gray-600">No content yet.</p>
-          )}
-        </article>
-      </Container>
+      <Comments postId={post.id} />
     </main>
   );
 }
